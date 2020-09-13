@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="GtkSharp" Version="3.22.25.98" />
-    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
