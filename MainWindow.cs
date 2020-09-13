@@ -3,6 +3,7 @@ using System;
 using System.Net;
 using System.Timers;
 using System.Collections.Generic;
+using Mono.Unix;
 
 namespace gtkfetch
 {
@@ -16,8 +17,6 @@ namespace gtkfetch
             Application.Init();
 
             Grid maingrid = new Grid();
-
-
             // init dict with label names and labels for values
             string[] labelnames = new string[] {"os", "uptime", "cpu", "mem"};
             foreach(string label in labelnames)
@@ -29,13 +28,21 @@ namespace gtkfetch
             foreach(KeyValuePair<string, Label> entry in labels)
             {
                 // add title labels
-                maingrid.Attach(mkLabel(entry.Key), 0, iteration, 1, 1);
+                maingrid.Attach(mkLabel(entry.Key), 1, iteration, 1, 1);
                 // add content labels
-                maingrid.Attach(entry.Value, 1, iteration, 1, 1);
+                maingrid.Attach(entry.Value, 2, iteration, 1, 1);
                 // add padding to content labels
                 entry.Value.MarginStart = 16;
                 iteration++;
             }
+            foreach(UnixDriveInfo epic in UnixDriveInfo.GetDrives())
+            {
+                Console.WriteLine(epic);
+            }
+            maingrid.Attach(Image.NewFromIconName("media-floppy", IconSize.LargeToolbar), 0, 0, 1, 1);
+            maingrid.Attach(Image.NewFromIconName("clock", IconSize.LargeToolbar), 0, 1, 1, 1);
+            maingrid.Attach(Image.NewFromIconName("cpu", IconSize.LargeToolbar), 0, 2, 1, 1);
+            maingrid.Attach(Image.NewFromIconName("media-memory", IconSize.LargeToolbar), 0, 3, 1, 1);
 
             // create timer which is used to update the values every second
             Timer timer = new Timer();
@@ -77,12 +84,15 @@ namespace gtkfetch
             MemInfoGetter.RefreshMemInfo();
             labels["os"].Text = $"{Environment.OSVersion.ToString()}";
             labels["uptime"].Text = $"{UptimeCalculator.GetUptimeStr()}";
-            labels["cpu"].Text = $"{CPUInfoGetter.CPU.vendor} {CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
+            labels["cpu"].Text = $"{CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
+            //labels["cpu"].Text = $"{CPUInfoGetter.CPU.vendor} {CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
             labels["mem"].Text = $"{Math.Round(MemInfoGetter.Mem.used/1048576, 2)} GiB/{Math.Round(MemInfoGetter.Mem.total/1048576, 2)} GiB";
         }
         static Label mkLabel(string content)
         {
-            return new Label(content);
+            Label newlabel = new Label(content);
+            newlabel.MarginStart = 16;
+            return newlabel;
         }
 
     }
