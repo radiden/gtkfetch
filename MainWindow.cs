@@ -2,39 +2,53 @@ using Gtk;
 using System;
 using System.Net;
 using System.Timers;
-using System.Collections.Generic;
 
 namespace gtkfetch
 {
+    public class InfoLabel
+    {
+        public Label titleLabel;
+        public Label contentLabel;
+        public Image icon;
+        public int topPos;
+        public InfoLabel(string title, string iconname, int top)
+        {
+            titleLabel = MainWindow.mkLabel(title);
+            // align text to left
+            titleLabel.Xalign = 0.0f;
+            contentLabel = new Label();
+            contentLabel.Xalign = 0.0f;
+            icon = Image.NewFromIconName(iconname, IconSize.LargeToolbar);
+            topPos = top;
+        }
+        public static void AttachAllToGrid(Grid maingrid, InfoLabel label, int top)
+        {
+            maingrid.Attach(label.icon, 0, top, 1, 1);
+            maingrid.Attach(label.titleLabel, 1, top, 1, 1);
+            maingrid.Attach(label.contentLabel, 2, top, 1, 1);
+        }
+    }
     public class MainWindow 
     {
-        static Dictionary<string, Label> labels = new Dictionary<string, Label>();
-        string[] labelnames = new string[] {"os", "uptime", "cpu", "mem"};
+        // create InfoLabel instances for each label
+        static InfoLabel osLabel = new InfoLabel("os", "media-floppy", 0);
+        static InfoLabel uptimeLabel = new InfoLabel("uptime", "video-television", 1);
+        static InfoLabel cpuLabel = new InfoLabel("cpu", "cpu", 2);
+        static InfoLabel memoryLabel = new InfoLabel("mem", "media-memory", 3);
+        // create main grid here so it's accessible from other plices
+        static Grid maingrid = new Grid();
 
         public static void InitWindow() 
         {
             Application.Init();
 
-            Grid maingrid = new Grid();
-
-
-            // init dict with label names and labels for values
-            string[] labelnames = new string[] {"os", "uptime", "cpu", "mem"};
-            foreach(string label in labelnames)
+            //iterate over all labels, attach them in order
+            InfoLabel[] labels = {osLabel, uptimeLabel, cpuLabel, memoryLabel};
+            int iter = 0;
+            foreach(InfoLabel label in labels)
             {
-                labels.Add(label, new Label());
-            }
-            
-            int iteration = 0;
-            foreach(KeyValuePair<string, Label> entry in labels)
-            {
-                // add title labels
-                maingrid.Attach(mkLabel(entry.Key), 0, iteration, 1, 1);
-                // add content labels
-                maingrid.Attach(entry.Value, 1, iteration, 1, 1);
-                // add padding to content labels
-                entry.Value.MarginStart = 16;
-                iteration++;
+                InfoLabel.AttachAllToGrid(maingrid, label, iter);
+                iter++;
             }
 
             // create timer which is used to update the values every second
@@ -50,6 +64,8 @@ namespace gtkfetch
             // style main grid
             maingrid.Margin = 8;
             maingrid.RowSpacing = 2;
+            maingrid.Halign = Align.Center;
+            maingrid.Valign = Align.Center;
 
             // get various info
             LabelUpdate();
@@ -75,15 +91,17 @@ namespace gtkfetch
         static void LabelUpdate()
         {
             MemInfoGetter.RefreshMemInfo();
-            labels["os"].Text = $"{Environment.OSVersion.ToString()}";
-            labels["uptime"].Text = $"{UptimeCalculator.GetUptimeStr()}";
-            labels["cpu"].Text = $"{CPUInfoGetter.CPU.vendor} {CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
-            labels["mem"].Text = $"{Math.Round(MemInfoGetter.Mem.used/1048576, 2)} GiB/{Math.Round(MemInfoGetter.Mem.total/1048576, 2)} GiB";
+            osLabel.contentLabel.Text = $"{Environment.OSVersion.ToString()}";
+            uptimeLabel.contentLabel.Text = $"{UptimeCalculator.GetUptimeStr()}";
+            cpuLabel.contentLabel.Text = $"{CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
+            memoryLabel.contentLabel.Text = $"{Math.Round(MemInfoGetter.Mem.used/1048576, 2)} GiB/{Math.Round(MemInfoGetter.Mem.total/1048576, 2)} GiB";
         }
-        static Label mkLabel(string content)
+        public static Label mkLabel(string content)
         {
-            return new Label(content);
+            Label newlabel = new Label(content);
+            newlabel.MarginStart = 16;
+            newlabel.MarginEnd = 16;
+            return newlabel;
         }
-
     }
 }
