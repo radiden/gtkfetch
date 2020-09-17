@@ -76,6 +76,8 @@ namespace gtkfetch
             // display window
             window.ShowAll();
 
+            FSInfoGetter.GetDrives();
+
             Application.Run();            
         }
         // handle window exit
