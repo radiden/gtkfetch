@@ -2,6 +2,7 @@ using Gtk;
 using System;
 using System.Net;
 using System.Timers;
+using System.Collections;
 
 namespace gtkfetch
 {
@@ -11,7 +12,7 @@ namespace gtkfetch
         public Label contentLabel;
         public Image icon;
         public int topPos;
-        public InfoLabel(string title, string iconname, int top)
+        public InfoLabel(string title, string iconname)
         {
             titleLabel = MainWindow.mkLabel(title);
             // align text to left
@@ -19,7 +20,6 @@ namespace gtkfetch
             contentLabel = new Label();
             contentLabel.Xalign = 0.0f;
             icon = Image.NewFromIconName(iconname, IconSize.LargeToolbar);
-            topPos = top;
         }
         public static void AttachAllToGrid(Grid maingrid, InfoLabel label, int top)
         {
@@ -31,19 +31,25 @@ namespace gtkfetch
     public class MainWindow 
     {
         // create InfoLabel instances for each label
-        static InfoLabel osLabel = new InfoLabel("os", "media-floppy", 0);
-        static InfoLabel uptimeLabel = new InfoLabel("uptime", "video-television", 1);
-        static InfoLabel cpuLabel = new InfoLabel("cpu", "cpu", 2);
-        static InfoLabel memoryLabel = new InfoLabel("mem", "media-memory", 3);
+        static InfoLabel osLabel = new InfoLabel("os", "media-floppy");
+        static InfoLabel uptimeLabel = new InfoLabel("uptime", "video-television");
+        static InfoLabel cpuLabel = new InfoLabel("cpu", "cpu");
+        static InfoLabel memoryLabel = new InfoLabel("mem", "media-memory");
         // create main grid here so it's accessible from other plices
         static Grid maingrid = new Grid();
+        public static ArrayList labels = new ArrayList(){osLabel, uptimeLabel, cpuLabel, memoryLabel};
 
         public static void InitWindow() 
         {
             Application.Init();
 
+            // get various info
+            LabelUpdate();
+            MemInfoGetter.GetMemInfo();
+            CPUInfoGetter.GetCPUInfo();
+            FSInfoGetter.GetDrives();
+
             //iterate over all labels, attach them in order
-            InfoLabel[] labels = {osLabel, uptimeLabel, cpuLabel, memoryLabel};
             int iter = 0;
             foreach(InfoLabel label in labels)
             {
@@ -67,16 +73,11 @@ namespace gtkfetch
             maingrid.Halign = Align.Center;
             maingrid.Valign = Align.Center;
 
-            // get various info
-            LabelUpdate();
-            MemInfoGetter.GetMemInfo();
-            CPUInfoGetter.GetCPUInfo();
+            // add main grid to window
             window.Add(maingrid);
 
             // display window
             window.ShowAll();
-
-            FSInfoGetter.GetDrives();
 
             Application.Run();            
         }

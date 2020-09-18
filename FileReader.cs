@@ -48,7 +48,7 @@ namespace gtkfetch
                         {
                             Match m = Regex.Match(line, regex);
                             // check if the group even exists, and also checks if its not an empty match
-                            if (m.Groups[1] != null || m.Groups[1].Value != "")
+                            if (m.Groups[1] != null && m.Groups[1].Value != "")
                             {
                                 matches.Add(m.Groups[group].Value.ToString());
                             }
