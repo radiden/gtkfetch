@@ -6,6 +6,7 @@ namespace gtkfetch
 {
     class Drive
     {
+        public DriveInfo driveInfo;
         public string driveName;
         public string sizeUnit;
         public Decimal totalSize;
@@ -13,6 +14,7 @@ namespace gtkfetch
         public Drive(string drivename)
         {
             DriveInfo drive = new DriveInfo(drivename);
+            driveInfo = drive;
             driveName = drivename;
             // is the drive over 1024GiB? if so, totalsize is going to be displayed as TiB; 1024^4 = 1099511627776
             if (drive.TotalSize >= 1099511627776)
@@ -45,9 +47,12 @@ namespace gtkfetch
                 foreach (string d in drivenames)
                 {
                     Drive drive = new Drive(d);
-                    InfoLabel driveLabel = new InfoLabel(drive.driveName, "drive-harddisk");
-                    MainWindow.labels.Add(driveLabel);
-                    driveLabel.contentLabel.Text = $"total: {drive.totalSize}{drive.sizeUnit}, {drive.usePercent}% used";
+                    if (drive.driveInfo.IsReady && drive.driveInfo.DriveType != DriveType.CDRom)
+                    {
+                        InfoLabel driveLabel = new InfoLabel(drive.driveName, "drive-harddisk");
+                        MainWindow.labels.Add(driveLabel);
+                        driveLabel.contentLabel.Text = $"total: {drive.totalSize}{drive.sizeUnit}, {drive.usePercent}% used";
+                    }
                 }
             }
             static public void UpdateDrives()
