@@ -30,14 +30,22 @@ namespace gtkfetch
                     return null;
                 case 1:
                     GPU gpu = GPUs[0];
-                    PCISubSystem card = PCIIdentificationDatabase.GetSubSystem(gpu.VendorID, gpu.DeviceID, gpu.SubsystemVendorID, gpu.SubsystemDeviceID);
-                    if(card.SubSystemName != "")
+                    try
                     {
-                        return card.SubSystemName;
+                        PCISubSystem card = PCIIdentificationDatabase.GetSubSystem(gpu.VendorID, gpu.DeviceID, gpu.SubsystemVendorID, gpu.SubsystemDeviceID);
+                        if(card.SubSystemName != null)
+                        {
+                            return card.SubSystemName;
+                        }
+                        else
+                        {
+                            return card.ParentDevice.ToString();
+                        }
                     }
-                    else
+                    catch (System.NullReferenceException)
                     {
-                        return card.ParentDevice.ToString();
+                        PCIDevice cardalt = PCIIdentificationDatabase.GetDevice(gpu.VendorID, gpu.DeviceID);
+                        return cardalt.DeviceName.ToString();
                     }
                 //TODO
                 default:
