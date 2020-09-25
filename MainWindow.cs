@@ -2,7 +2,7 @@ using Gtk;
 using System;
 using System.Net;
 using System.Timers;
-using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace gtkfetch
@@ -23,6 +23,15 @@ namespace gtkfetch
             contentLabel.Xalign = 0.0f;
             icon = Image.NewFromIconName(iconname, IconSize.LargeToolbar);
         }
+        public InfoLabel(string title, string iconname, string content)
+        {
+            titleLabel = MainWindow.mkLabel(title);
+            // align text to left
+            titleLabel.Xalign = 0.0f;
+            contentLabel = new Label(content);
+            contentLabel.Xalign = 0.0f;
+            icon = Image.NewFromIconName(iconname, IconSize.LargeToolbar);
+        }
         public static void AttachAllToGrid(Grid maingrid, InfoLabel label, int top)
         {
             maingrid.Attach(label.icon, 0, top, 1, 1);
@@ -38,11 +47,10 @@ namespace gtkfetch
         static InfoLabel shellLabel = new InfoLabel("shell", "terminal");
         static InfoLabel uptimeLabel = new InfoLabel("uptime", "video-television");
         static InfoLabel cpuLabel = new InfoLabel("cpu", "cpu");
-        static InfoLabel gpuLabel = new InfoLabel("gpu", "device_pci");
         static InfoLabel memoryLabel = new InfoLabel("mem", "media-memory");
         // create main grid here so it's accessible from other plices
         static Grid maingrid = new Grid();
-        public static ArrayList labels = new ArrayList(){osLabel, kernelLabel, shellLabel, uptimeLabel, cpuLabel, gpuLabel, memoryLabel};
+        public static List<InfoLabel> labels = new List<InfoLabel>(){osLabel, kernelLabel, shellLabel, uptimeLabel, cpuLabel, memoryLabel};
 
         public static void InitWindow() 
         {
@@ -52,6 +60,20 @@ namespace gtkfetch
             LabelUpdate();
             MemInfoGetter.GetMemInfo();
             CPUInfoGetter.GetCPUInfo();
+            GPUInfoGetter.GetGPUInstances();
+
+            switch(GPUInfoGetter.GPUs.Count)
+            {
+                case 0:
+                    break;
+                case 1:
+                    InfoLabel gpuLabel = new InfoLabel("gpu", "device_pci", GPUInfoGetter.GetGPUInfo());
+                    labels.Add(gpuLabel);
+                    break;
+                default:
+                    break;
+            }
+
             FSInfoGetter.GetDrives();
 
             //iterate over all labels, attach them in order
@@ -84,8 +106,6 @@ namespace gtkfetch
             // display window
             window.ShowAll();
 
-            GPUInfoGetter.GetGPUInfo();
-
             Application.Run();            
         }
         // handle window exit
@@ -106,7 +126,7 @@ namespace gtkfetch
             shellLabel.contentLabel.Text = $"{Environment.GetEnvironmentVariable("SHELL")}";
             uptimeLabel.contentLabel.Text = $"{UptimeCalculator.GetUptimeStr()}";
             cpuLabel.contentLabel.Text = $"{CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
-            gpuLabel.contentLabel.Text = $"{GPUInfoGetter.GetGPUInfo()}";
+            //gpuLabel.contentLabel.Text = $"{GPUInfoGetter.GetGPUInfo()}";
             memoryLabel.contentLabel.Text = $"{Math.Round(MemInfoGetter.Mem.used/1048576, 2)} GiB/{Math.Round(MemInfoGetter.Mem.total/1048576, 2)} GiB";
         }
         public static Label mkLabel(string content)

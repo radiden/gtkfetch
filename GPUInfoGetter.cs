@@ -29,14 +29,22 @@ namespace gtkfetch
                 case 0:
                     return null;
                 case 1:
-                    GPU gpu = GPUs[1];
+                    GPU gpu = GPUs[0];
                     PCISubSystem card = PCIIdentificationDatabase.GetSubSystem(gpu.VendorID, gpu.DeviceID, gpu.SubsystemVendorID, gpu.SubsystemDeviceID);
-                    return card.SubSystemName;
+                    if(card.SubSystemName != "")
+                    {
+                        return card.SubSystemName;
+                    }
+                    else
+                    {
+                        return card.ParentDevice.ToString();
+                    }
+                //TODO
                 default:
                     return null;
             }
         }
-        static void GetGPUInstances()
+        public static void GetGPUInstances()
         {
             var devices = Directory.EnumerateDirectories("/sys/bus/pci/devices/");
             foreach(string directory in devices)
