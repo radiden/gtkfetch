@@ -34,8 +34,15 @@ namespace gtkfetch
                 }
                 catch (System.NullReferenceException)
                 {
-                    PCIDevice cardalt = PCIIdentificationDatabase.GetDevice(gpu.VendorID, gpu.DeviceID);
-                    cards.Add(cardalt.DeviceName.ToString());
+                    try
+                    {
+                        PCIDevice cardalt = PCIIdentificationDatabase.GetDevice(gpu.VendorID, gpu.DeviceID);
+                        cards.Add(cardalt.DeviceName.ToString());
+                    }
+                    catch
+                    {
+                        cards.Add("unknown");
+                    }
                 }
             }
             return cards;
