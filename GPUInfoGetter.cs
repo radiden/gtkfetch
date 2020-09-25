@@ -1,7 +1,6 @@
-//i already know this is gonna be hell
 using System;
 using System.IO;
-using System.Collections;
+using System.Collections.Generic;
 using PCIIdentificationResolver;
 
 namespace gtkfetch
@@ -22,18 +21,20 @@ namespace gtkfetch
     }
     class GPUInfoGetter
     {
-        public static int GPUCount = 0;
-        public static ArrayList GPUs = new ArrayList();
+        public static List<GPU> GPUs = new List<GPU>();
         public static string GetGPUInfo()
         {
-            //definition of a hack FIXME
-            GetGPUInstances();
-            foreach(GPU arrayobject in GPUs)
+            switch (GPUs.Count)
             {
-                PCISubSystem card = PCIIdentificationDatabase.GetSubSystem(arrayobject.VendorID, arrayobject.DeviceID, arrayobject.SubsystemVendorID, arrayobject.SubsystemDeviceID);
-                return card.SubSystemName;
+                case 0:
+                    return null;
+                case 1:
+                    GPU gpu = GPUs[1];
+                    PCISubSystem card = PCIIdentificationDatabase.GetSubSystem(gpu.VendorID, gpu.DeviceID, gpu.SubsystemVendorID, gpu.SubsystemDeviceID);
+                    return card.SubSystemName;
+                default:
+                    return null;
             }
-            return null;
         }
         static void GetGPUInstances()
         {
@@ -42,7 +43,6 @@ namespace gtkfetch
             {
                 if(File.Exists($"{directory}/boot_vga"))
                 {
-                    GPUCount++;
                     ushort vid = Convert.ToUInt16(FileReader.ReadLine($"{directory}/vendor"), 16);
                     ushort did = Convert.ToUInt16(FileReader.ReadLine($"{directory}/device"), 16);
                     ushort svid = Convert.ToUInt16(FileReader.ReadLine($"{directory}/subsystem_vendor"), 16);
