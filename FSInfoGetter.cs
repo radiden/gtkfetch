@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System;
 
@@ -40,7 +40,7 @@ namespace gtkfetch
     class FSInfoGetter
         {
             static string driveexpr = @"^(?!#)[a-zA-Z0-9\/=\-\""]*\s*(?!none)([\/a-zA-Z]*)";
-            static ArrayList drivenames = new ArrayList(FileReader.ReadFileMatchMultiple("/etc/fstab", driveexpr, 1)); 
+            static List<string> drivenames = new List<string>(FileReader.ReadFileMatchMultiple("/etc/fstab", driveexpr, 1)); 
             static public void GetDrives()
             {
                 foreach (string d in drivenames)

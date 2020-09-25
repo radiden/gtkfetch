@@ -1,7 +1,7 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Collections;
 
 namespace gtkfetch
 {
@@ -33,9 +33,9 @@ namespace gtkfetch
             return null;
 
         }
-        public static ArrayList ReadFileMatchMultiple(string path, string regex, int group)
+        public static List<string> ReadFileMatchMultiple(string path, string regex, int group)
         {
-            ArrayList matches = new ArrayList();
+            List<string> matches = new List<string>();
             try 
             {
                 using (StreamReader file = new StreamReader(path)) 
