@@ -22,35 +22,23 @@ namespace gtkfetch
     class GPUInfoGetter
     {
         public static List<GPU> GPUs = new List<GPU>();
-        public static string GetGPUInfo()
+        public static List<string> GetGPUInfo()
         {
-            switch (GPUs.Count)
+            List<string> cards = new List<string>();
+            foreach(GPU gpu in GPUs)
             {
-                case 0:
-                    return null;
-                case 1:
-                    GPU gpu = GPUs[0];
-                    try
-                    {
-                        PCISubSystem card = PCIIdentificationDatabase.GetSubSystem(gpu.VendorID, gpu.DeviceID, gpu.SubsystemVendorID, gpu.SubsystemDeviceID);
-                        if(card.SubSystemName != null)
-                        {
-                            return card.SubSystemName;
-                        }
-                        else
-                        {
-                            return card.ParentDevice.ToString();
-                        }
-                    }
-                    catch (System.NullReferenceException)
-                    {
-                        PCIDevice cardalt = PCIIdentificationDatabase.GetDevice(gpu.VendorID, gpu.DeviceID);
-                        return cardalt.DeviceName.ToString();
-                    }
-                //TODO
-                default:
-                    return null;
+                try
+                {
+                    PCISubSystem card = PCIIdentificationDatabase.GetSubSystem(gpu.VendorID, gpu.DeviceID, gpu.SubsystemVendorID, gpu.SubsystemDeviceID);
+                    cards.Add(card.SubSystemName);
+                }
+                catch (System.NullReferenceException)
+                {
+                    PCIDevice cardalt = PCIIdentificationDatabase.GetDevice(gpu.VendorID, gpu.DeviceID);
+                    cards.Add(cardalt.DeviceName.ToString());
+                }
             }
+            return cards;
         }
         public static void GetGPUInstances()
         {

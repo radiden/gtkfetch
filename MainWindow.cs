@@ -51,7 +51,6 @@ namespace gtkfetch
         // create main grid here so it's accessible from other plices
         static Grid maingrid = new Grid();
         public static List<InfoLabel> labels = new List<InfoLabel>(){osLabel, kernelLabel, shellLabel, uptimeLabel, cpuLabel, memoryLabel};
-
         public static void InitWindow() 
         {
             Application.Init();
@@ -62,21 +61,29 @@ namespace gtkfetch
             CPUInfoGetter.GetCPUInfo();
             GPUInfoGetter.GetGPUInstances();
 
+            int iter2 = 0;
             switch(GPUInfoGetter.GPUs.Count)
             {
                 case 0:
                     break;
                 case 1:
-                    InfoLabel gpuLabel = new InfoLabel("gpu", "device_pci", GPUInfoGetter.GetGPUInfo());
+                    // if theres only one gpu only get one element because there isn't gonna be more
+                    InfoLabel gpuLabel = new InfoLabel("gpu", "device_pci", GPUInfoGetter.GetGPUInfo()[0]);
                     labels.Add(gpuLabel);
                     break;
                 default:
+                    foreach(string gpuname in GPUInfoGetter.GetGPUInfo())
+                    {
+                        InfoLabel gpuLabels = new InfoLabel($"gpu{iter2}", "device_pci", gpuname);
+                        labels.Add(gpuLabels);
+                        iter2++;
+                    }
                     break;
             }
 
             FSInfoGetter.GetDrives();
 
-            //iterate over all labels, attach them in order
+            // iterate over all labels, attach them in order
             int iter = 0;
             foreach(InfoLabel label in labels)
             {
@@ -126,7 +133,6 @@ namespace gtkfetch
             shellLabel.contentLabel.Text = $"{Environment.GetEnvironmentVariable("SHELL")}";
             uptimeLabel.contentLabel.Text = $"{UptimeCalculator.GetUptimeStr()}";
             cpuLabel.contentLabel.Text = $"{CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
-            //gpuLabel.contentLabel.Text = $"{GPUInfoGetter.GetGPUInfo()}";
             memoryLabel.contentLabel.Text = $"{Math.Round(MemInfoGetter.Mem.used/1048576, 2)} GiB/{Math.Round(MemInfoGetter.Mem.total/1048576, 2)} GiB";
         }
         public static Label mkLabel(string content)
