@@ -94,7 +94,7 @@ namespace gtkfetch
         static void LabelUpdate()
         {
             MemInfoGetter.RefreshMemInfo();
-            osLabel.contentLabel.Text = $"{Environment.OSVersion.ToString()}";
+            osLabel.contentLabel.Text = $"{OSInfoGetter.GetOS()}";
             uptimeLabel.contentLabel.Text = $"{UptimeCalculator.GetUptimeStr()}";
             cpuLabel.contentLabel.Text = $"{CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
             memoryLabel.contentLabel.Text = $"{Math.Round(MemInfoGetter.Mem.used/1048576, 2)} GiB/{Math.Round(MemInfoGetter.Mem.total/1048576, 2)} GiB";
