@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="GtkSharp" Version="3.22.25.98" />
+    <PackageReference Include="PCIIdentificationResolver" Version="2.19.322.5" />
+    <PackageReference Include="X11" Version="1.0.6" />
   </ItemGroup>
 
 </Project>

@@ -40,8 +40,7 @@ namespace gtkfetch
     class FSInfoGetter
         {
             static string driveexpr = @"^(?!#)[a-zA-Z0-9\/=\-\""]*\s*(?!none)([\/a-zA-Z]*)";
-            static ArrayList drivenames = new ArrayList(FileReader.ReadFileMatchMultiple("/etc/fstab", driveexpr, 1));
-
+            static ArrayList drivenames = new ArrayList(FileReader.ReadFileMatchMultiple("/etc/fstab", driveexpr, 1)); 
             static public void GetDrives()
             {
                 foreach (string d in drivenames)
@@ -54,9 +53,6 @@ namespace gtkfetch
                         driveLabel.contentLabel.Text = $"total: {drive.totalSize}{drive.sizeUnit}, {drive.usePercent}% used";
                     }
                 }
-            }
-            static public void UpdateDrives()
-            {
             }
         }
     } 
