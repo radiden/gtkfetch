@@ -17,6 +17,7 @@ namespace gtkfetch
 
             // add main grid to window
             window.Add(maingrid);
+            window.IconName = "video-display";
             Labels.Init();
 
             // display window
