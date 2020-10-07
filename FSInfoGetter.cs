@@ -11,6 +11,7 @@ namespace gtkfetch
         public string sizeUnit;
         public Decimal totalSize;
         public Decimal usePercent;
+        /// <summary> Constructor that creates a Drive instance which contains info about a Drive </summary>
         public Drive(string drivename)
         {
             DriveInfo drive = new DriveInfo(drivename);
@@ -40,7 +41,8 @@ namespace gtkfetch
     class FSInfoGetter
         {
             static string driveexpr = @"^(?!#)[a-zA-Z0-9\/=\-\""]*\s*(?!none)([\/a-zA-Z]*)";
-            static List<string> drivenames = new List<string>(FileReader.ReadFileMatchMultiple("/etc/fstab", driveexpr, 1)); 
+            static List<string> drivenames = new List<string>(FileReader.ReadFileMatchMultiple("/etc/fstab", driveexpr, 1));
+            /// <summary> Creates labels containing drive info and adds them to array </summary>
             static public void GetDrives()
             {
                 foreach (string d in drivenames)
@@ -49,10 +51,10 @@ namespace gtkfetch
                     if (drive.driveInfo.IsReady && drive.driveInfo.DriveType != DriveType.CDRom)
                     {
                         InfoLabel driveLabel = new InfoLabel(drive.driveName, "drive-harddisk");
-                        MainWindow.labels.Add(driveLabel);
+                        Labels.labels.Add(driveLabel);
                         driveLabel.contentLabel.Text = $"total: {drive.totalSize}{drive.sizeUnit}, {drive.usePercent}% used";
                     }
                 }
             }
         }
-    } 
+    }
