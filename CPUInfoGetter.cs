@@ -21,7 +21,7 @@ namespace gtkfetch
         /// <summary> Gets CPU Information and populates CPU instance </summary>
         public static void GetCPUInfo()
         {
-            string modelexpr = @"model\sname\s*:\s*(.*)";
+            string modelexpr = @"model\sname\s*:\s*(.*)(\s@)";
             string vendorexpr = @"vendor_id\s*:\s*(.*)";
             string idexpr = @"physical id\s*:\s*(\d+)";
             CPU.model = FileReader.ReadFileAndFindGroup("/proc/cpuinfo", modelexpr, 1);
