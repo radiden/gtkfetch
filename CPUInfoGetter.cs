@@ -30,14 +30,6 @@ namespace gtkfetch
                 CPU.speed = null;
                 Console.WriteLine("could not get cpu speed!");
             }
-            if (CPU.speed != null)
-            {
-                Labels.cpuLabel = new InfoLabel("cpu", "cpu", $"{CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}");
-            }
-            else
-            {
-                Labels.cpuLabel = new InfoLabel("cpu", "cpu", $"{CPUInfoGetter.CPU.model}");
-            }
         }
     }
 }

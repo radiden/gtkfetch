@@ -46,8 +46,8 @@ namespace gtkfetch
         static InfoLabel osLabel = new InfoLabel("os", "media-floppy", OSInfoGetter.GetOS());
         static InfoLabel kernelLabel = new InfoLabel("kernel", "tux", RuntimeInformation.OSDescription);
         static InfoLabel shellLabel = new InfoLabel("shell", "terminal", Environment.GetEnvironmentVariable("SHELL"));
-        static InfoLabel uptimeLabel = new InfoLabel("uptime", "video-television");
-        public static InfoLabel cpuLabel;
+        static InfoLabel uptimeLabel = new InfoLabel("uptime", "video-display");
+        static InfoLabel cpuLabel = new InfoLabel("cpu", "cpu");
         static InfoLabel memoryLabel = new InfoLabel("mem", "media-memory");
         public static List<InfoLabel> labels = new List<InfoLabel>(){osLabel, kernelLabel, shellLabel, uptimeLabel, cpuLabel, memoryLabel};
         public static void Init() {
@@ -60,6 +60,16 @@ namespace gtkfetch
             LabelUpdate();
             MemInfoGetter.GetMemInfo();
             CPUInfoGetter.GetCPUInfo();
+
+            if (CPUInfoGetter.CPU.speed != null)
+            {
+                cpuLabel.contentLabel.Text = $"{CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
+            }
+            else
+            {
+                cpuLabel.contentLabel.Text = CPUInfoGetter.CPU.model;
+            }
+
             GPUInfoGetter.GetGPUInstances();
 
             int iter2 = 0;
@@ -88,7 +98,8 @@ namespace gtkfetch
         }
 
         /// <summary> Attaches all miscellaneous labels that don't have separate files and styles the main grid </summary>
-        static void PopulateWindow() {
+        static void PopulateWindow() 
+        {
             // iterate over all labels, attach them in order
             int iter = 0;
             foreach(InfoLabel label in Labels.labels)
