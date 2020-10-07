@@ -7,6 +7,7 @@ namespace gtkfetch
 {
     public class FileReader
     {
+        /// <summary> Returns first match </summary>
         public static string ReadFileAndFindGroup(string path, string regex, int group)
         {
             try 
@@ -33,6 +34,7 @@ namespace gtkfetch
             return null;
 
         }
+        /// <summary> Reads file and regex matches things on all lines of the file </summary> 
         public static List<string> ReadFileMatchMultiple(string path, string regex, int group)
         {
             List<string> matches = new List<string>();
@@ -63,7 +65,7 @@ namespace gtkfetch
                 return null;
             }
         }
-
+        /// <summary> Reads single line of file </summary>
         public static string ReadLine(string path)
         {
             try 

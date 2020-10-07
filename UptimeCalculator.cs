@@ -2,8 +2,9 @@ using System;
 
 namespace gtkfetch {
     public class UptimeCalculator {
+        /// <summary> Gets uptime of system and formats it </summary>
         public static string GetUptimeStr() {
-            // gets the uptime, excluding the time the machine slept
+            // doesn't include time where machine was asleep
             TimeSpan uptime = new TimeSpan(Environment.TickCount64*TimeSpan.TicksPerMillisecond);
             
             if (uptime.Days == 0) {

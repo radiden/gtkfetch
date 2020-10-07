@@ -11,6 +11,7 @@ namespace gtkfetch
         public ushort DeviceID;
         public ushort SubsystemVendorID;
         public ushort SubsystemDeviceID;
+        /// <summary> Constructor for creating a GPU instance </summary>
         public GPU(ushort vid, ushort did, ushort svid, ushort sdid)
         {
             VendorID = vid;
@@ -22,6 +23,7 @@ namespace gtkfetch
     class GPUInfoGetter
     {
         public static List<GPU> GPUs = new List<GPU>();
+        /// <summary> Returns all GPUs in system </summary>
         public static List<string> GetGPUInfo()
         {
             List<string> cards = new List<string>();
@@ -47,6 +49,7 @@ namespace gtkfetch
             }
             return cards;
         }
+        /// <summary> Finds all GPUs and creates a GPU instance for each </summary>
         public static void GetGPUInstances()
         {
             var devices = Directory.EnumerateDirectories("/sys/bus/pci/devices/");
