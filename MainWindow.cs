@@ -22,7 +22,7 @@ namespace gtkfetch
             // display window
             window.ShowAll();
 
-            Application.Run();            
+            Application.Run();
         }
         // handle window exit
         static void delete_event(object obj, DeleteEventArgs args) 

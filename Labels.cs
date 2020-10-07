@@ -63,11 +63,11 @@ namespace gtkfetch
 
             if (CPUInfoGetter.CPU.speed != null)
             {
-                cpuLabel.contentLabel.Text = $"{CPUInfoGetter.CPU.model} @ {CPUInfoGetter.CPU.speed}";
+                cpuLabel.contentLabel.Text = $"{CPUInfoGetter.CPU.count}{CPUInfoGetter.CPU.model} ({CPUInfoGetter.CPU.threadCount}) @ {CPUInfoGetter.CPU.speed}";
             }
             else
             {
-                cpuLabel.contentLabel.Text = CPUInfoGetter.CPU.model;
+                cpuLabel.contentLabel.Text = $"{CPUInfoGetter.CPU.count}{CPUInfoGetter.CPU.model} ({CPUInfoGetter.CPU.threadCount})";
             }
 
             GPUInfoGetter.GetGPUInstances();
