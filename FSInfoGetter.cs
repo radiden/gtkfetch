@@ -40,7 +40,7 @@ namespace gtkfetch
     }
     class FSInfoGetter
         {
-            static string driveexpr = @"^(?!#)[a-zA-Z0-9\/=\-\""]*\s*(?!none)([\/a-zA-Z]*)";
+            static string driveexpr = @"^(?!#)[a-zA-Z0-9\/=\-\""]*\s*(?!none)(\S*)";
             static List<string> drivenames = new List<string>(FileReader.ReadFileMatchMultiple("/etc/fstab", driveexpr, 1));
             /// <summary> Creates labels containing drive info and adds them to array </summary>
             static public void GetDrives()
